@@ -15,8 +15,8 @@
             width: 320px;
             height: 400px;
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: #333;
+            background: linear-gradient(135deg, #1a1a1a 0%, #000000 100%);
+            color: #fff;
             overflow: hidden;
             margin: 0;
         }
@@ -37,32 +37,33 @@
         .logo {
             width: 36px;
             height: 36px;
-            background: rgba(255, 255, 255, 0.15);
+            background: linear-gradient(135deg, #FF8A50 0%, #EC661F 100%);
             border-radius: 10px;
             margin: 0 auto 10px;
             display: flex;
             align-items: center;
             justify-content: center;
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 4px 12px rgba(236, 102, 31, 0.25);
         }
         
         .logo::before {
-            content: "✈";
-            font-size: 18px;
+            content: "CT";
+            font-size: 14px;
+            font-weight: 700;
             color: white;
+            letter-spacing: -0.5px;
         }
         
         h1 {
-            color: white;
+            color: #EC661F;
             font-size: 18px;
             font-weight: 600;
-            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
             margin: 0;
+            text-shadow: 0 0 10px rgba(236, 102, 31, 0.3);
         }
         
         .subtitle {
-            color: rgba(255, 255, 255, 0.8);
+            color: #aaa;
             font-size: 12px;
             margin-top: 4px;
             font-weight: 400;
@@ -78,33 +79,40 @@
         
         .input-label {
             display: block;
-            color: rgba(255, 255, 255, 0.9);
+            color: #EC661F;
             font-size: 12px;
             font-weight: 500;
             margin-bottom: 8px;
             text-transform: uppercase;
             letter-spacing: 0.5px;
+            text-shadow: 0 0 8px rgba(236, 102, 31, 0.4);
         }
         
         input {
             width: 100%;
             padding: 12px 14px;
-            border: none;
+            border: 2px solid #333;
             border-radius: 10px;
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(10px);
+            background: rgba(255, 255, 255, 0.05);
             font-size: 13px;
             font-weight: 500;
-            color: #333;
-            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+            color: #fff;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
             transition: all 0.2s ease;
+            backdrop-filter: blur(10px);
         }
         
         input:focus {
             outline: none;
-            background: white;
-            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+            border-color: #EC661F;
+            background: rgba(255, 255, 255, 0.08);
+            box-shadow: 0 4px 16px rgba(236, 102, 31, 0.25), 0 0 0 3px rgba(236, 102, 31, 0.1);
             transform: translateY(-1px);
+        }
+        
+        input::placeholder {
+            color: #888;
+            font-weight: 400;
         }
         
         input::placeholder {
@@ -149,32 +157,36 @@
         }
         
         .btn-primary {
-            background: rgba(255, 255, 255, 0.2);
+            background: linear-gradient(135deg, #FF8A50 0%, #EC661F 100%);
             color: white;
-            border: 1px solid rgba(255, 255, 255, 0.3);
+            border: none;
+            box-shadow: 0 3px 12px rgba(236, 102, 31, 0.4), 0 0 20px rgba(236, 102, 31, 0.1);
         }
         
         .btn-primary:hover {
-            background: rgba(255, 255, 255, 0.3);
+            background: linear-gradient(135deg, #EC661F 0%, #D4541A 100%);
             transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+            box-shadow: 0 6px 20px rgba(236, 102, 31, 0.5), 0 0 30px rgba(236, 102, 31, 0.2);
         }
         
         .btn-secondary {
-            background: white;
-            color: #667eea;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            background: rgba(255, 255, 255, 0.05);
+            color: #EC661F;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+            border: 2px solid #EC661F;
+            backdrop-filter: blur(10px);
         }
         
         .btn-secondary:hover {
-            background: #f8f9ff;
+            background: #EC661F;
+            color: white;
             transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+            box-shadow: 0 6px 20px rgba(236, 102, 31, 0.4), 0 0 25px rgba(236, 102, 31, 0.2);
         }
         
         .divider {
             height: 1px;
-            background: rgba(255, 255, 255, 0.2);
+            background: rgba(255, 255, 255, 0.1);
             margin: 12px 0;
             position: relative;
         }
@@ -185,12 +197,15 @@
             top: -8px;
             left: 50%;
             transform: translateX(-50%);
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: rgba(255, 255, 255, 0.8);
+            background: rgba(0, 0, 0, 0.8);
+            color: #EC661F;
             padding: 0 12px;
             font-size: 10px;
             font-weight: 600;
             letter-spacing: 1px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            backdrop-filter: blur(10px);
         }
         
         .environment-badges {
@@ -211,15 +226,17 @@
         }
         
         .badge-prod {
-            background: rgba(76, 175, 80, 0.2);
+            background: rgba(76, 175, 80, 0.15);
             color: #4CAF50;
             border: 1px solid rgba(76, 175, 80, 0.3);
+            backdrop-filter: blur(10px);
         }
         
         .badge-qa {
-            background: rgba(255, 193, 7, 0.2);
-            color: #FFC107;
-            border: 1px solid rgba(255, 193, 7, 0.3);
+            background: rgba(236, 102, 31, 0.15);
+            color: #FF8A50;
+            border: 1px solid rgba(236, 102, 31, 0.3);
+            backdrop-filter: blur(10px);
         }
         
         .floating-orbs {
@@ -235,8 +252,9 @@
         .orb {
             position: absolute;
             border-radius: 50%;
-            background: rgba(255, 255, 255, 0.1);
+            background: rgba(236, 102, 31, 0.08);
             animation: float 6s ease-in-out infinite;
+            box-shadow: 0 0 20px rgba(236, 102, 31, 0.1);
         }
         
         .orb:nth-child(1) {
