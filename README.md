@@ -4,7 +4,7 @@ A Chrome extension that helps you quickly access Cleartrip stats pages from itin
 
 ## Features
 - Automatically detects Cleartrip itinerary pages
-- Opens stats pages based on the current domain (www.cleartrip or me.cleartrip)
+- Opens stats pages based on the current domain (www.cleartrip.ae or me.cleartrip.ae)
 - Simple one-click interface
 
 ## Installation
