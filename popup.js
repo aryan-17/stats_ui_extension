@@ -9,26 +9,45 @@ document.addEventListener('DOMContentLoaded', function() {
             // Get the current URL
             const url = new URL(tab.url);
             
-            // Extract the itinerary ID from the URL
-            // The URL format is something like: /flights/itinerary/NI733f37a7f1-7f46-4dcc-8373-250610225426/info
-            const pathParts = url.pathname.split('/');
-            let itineraryId = pathParts[3]; // The itinerary ID is the 4th part of the path
-
-            if(itineraryId.includes('_')){
-                itineraryId = itineraryId.split('_')[0];
+            // Get itinerary ID from input if provided, otherwise extract from URL
+            let itineraryId = itineraryInput.value.trim();
+            
+            if (!itineraryId) {
+                // Extract from URL if no input provided
+                const pathParts = url.pathname.split('/');
+                if (pathParts.length >= 4) {
+                    itineraryId = pathParts[3];
+                    if (itineraryId.includes('_')) {
+                        itineraryId = itineraryId.split('_')[0];
+                    }
+                } else {
+                    throw new Error('No itinerary ID provided and URL format is invalid');
+                }
             }
             
-            // Determine which stats URL to use based on domain
-            let statsUrl;
-            if (url.hostname.startsWith('www.cleartrip')) {
-                statsUrl = `http://statsui.cleartripcorp.me/#/air/${itineraryId}`;
-                chrome.tabs.create({ url: statsUrl });
-            } else if (url.hostname.startsWith('me.cleartrip')) {
-                statsUrl = `http://statsui.cleartrip.sa/#/air/${itineraryId}`;
-                chrome.tabs.create({ url: statsUrl });
-            } else {
-                alert('This extension works only on Cleartrip itinerary pages');
+            // Validate the itinerary ID
+            if (!itineraryId) {
+                throw new Error('Please enter an itinerary ID or be on a valid itinerary page');
             }
+
+            // Always use cleartripcorp.me for manual inputs
+            let statsUrl;
+            if (itineraryInput.value.trim()) {
+                // If input is provided, use cleartripcorp.me
+                statsUrl = `http://statsui.cleartripcorp.me/#/air/${itineraryId}`;
+            } else {
+                // If no input, use domain-based URL
+                if (url.hostname.startsWith('www.cleartrip')) {
+                    statsUrl = `http://statsui.cleartripcorp.me/#/air/${itineraryId}`;
+                } else if (url.hostname.startsWith('me.cleartrip')) {
+                    statsUrl = `http://statsui.cleartrip.sa/#/air/${itineraryId}`;
+                } else {
+                    throw new Error('Not on a Cleartrip domain');
+                }
+            }
+            
+            // Open the stats page in a new tab
+            chrome.tabs.create({ url: statsUrl });
         } catch (error) {
             console.error('Error:', error);
             alert('Error processing the URL. Please make sure you are on a valid itinerary page.');
