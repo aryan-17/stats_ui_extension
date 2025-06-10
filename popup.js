@@ -12,7 +12,11 @@ document.addEventListener('DOMContentLoaded', function() {
             // Extract the itinerary ID from the URL
             // The URL format is something like: /flights/itinerary/NI733f37a7f1-7f46-4dcc-8373-250610225426/info
             const pathParts = url.pathname.split('/');
-            const itineraryId = pathParts[3]; // The itinerary ID is the 4th part of the path
+            let itineraryId = pathParts[3]; // The itinerary ID is the 4th part of the path
+
+            if(itineraryId.includes('_')){
+                itineraryId = itineraryId.split('_')[0];
+            }
             
             // Determine which stats URL to use based on domain
             let statsUrl;
@@ -21,7 +25,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 chrome.tabs.create({ url: statsUrl });
             } else if (url.hostname.startsWith('me.cleartrip')) {
                 statsUrl = `http://statsui.cleartrip.sa/#/air/${itineraryId}`;
-                chrome.tabs.update(tab.id, { url: statsUrl });
+                chrome.tabs.create({ url: statsUrl });
             } else {
                 alert('This extension works only on Cleartrip itinerary pages');
             }
