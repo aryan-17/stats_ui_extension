@@ -1,0 +1,17 @@
+Hi I want to create an extension for my Chrome browser.
+
+Functionality:-
+
+1. Whenever I open a itinerary page on the following link -> https://www.cleartrip.ae/flights/itinerary/NI733f37a7f1-7f46-4dcc-8373-250610225426/info?ancillaryEnabled=true
+
+2. The extension should scrape the itinerary id. Example in this case -> NI733f37a7f1-7f46-4dcc-8373-250610225426
+
+3. The next step should be to create another url and open it in a new tab. For example in this case -> https://statsui.cleartripcorp.me/#/air/NI733f37a7f1-7f46-4dcc-8373-250610225426
+
+4. Now the most important part 
+    a. if the itinerary url starts from www.cleartrip then open the stats url in a new tab with dns (https://statsui.cleartripcorp.me/#/air/NI733f37a7f1-7f46-4dcc-8373-250610225426).
+    b. if the itinerary url starts from me.cleartrip then open the stats url in the same tab with dns (https://statsui.cleartrip.sa/#/air/NI733f37a7f1-7f46-4dcc-8373-250610225426).
+
+5. The extension should be able to handle all the above cases.
+
+6. Make the ui simple with just a button showing go to stats page.

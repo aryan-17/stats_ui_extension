@@ -1,0 +1,27 @@
+{
+  "manifest_version": 3,
+  "name": "Cleartrip Stats Extension",
+  "version": "1.0",
+  "description": "Opens Cleartrip stats page based on itinerary URL",
+  "permissions": [
+    "activeTab",
+    "scripting",
+    "tabs"
+  ],
+  "action": {
+    "default_popup": "popup.html",
+    "default_icon": {
+      "16": "/images/cleartrip.png",
+      "48": "/images/cleartrip.png",
+      "128": "/images/cleartrip.png"
+    }
+  },
+  "host_permissions": [
+    "https://www.cleartrip.ae/*",
+    "https://www.cleartrip.sa/*",
+    "https://me.cleartrip.ae/*",
+    "https://me.cleartrip.sa/*",
+    "https://statsui.cleartripcorp.me/*",
+    "https://statsui.cleartrip.sa/*"
+  ]
+}
