@@ -17,3 +17,4 @@ A Chrome extension that helps you quickly access Cleartrip stats pages from itin
 1. Click the extension icon in your Chrome toolbar
 2. Click "Go to Stats Page" button
 3. The extension will open the appropriate stats page based on your current domain
+4. Additionally, you can enter the itinerary id or trip id in the input box to open the respective stats page.
