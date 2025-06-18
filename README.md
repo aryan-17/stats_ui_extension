@@ -3,12 +3,19 @@
 A Chrome extension that helps you quickly access Cleartrip stats pages from itinerary pages. This extension streamlines your workflow by providing instant access to stats pages directly from your Cleartrip itinerary pages.
 
 ## Features
+<<<<<<< HEAD
+=======
+- Automatically detects Cleartrip itinerary pages
+- Opens stats pages based on the current domain (www.cleartrip.ae or me.cleartrip.ae)
+- Simple one-click interface
+>>>>>>> dc1a014da5f1ad98cd985229eb0a28f6aba88e12
 
 - 🚀 **Automatic Detection**: Automatically detects Cleartrip itinerary pages
 - 🌐 **Domain-Specific Routing**: Opens stats pages based on your current domain (www.cleartrip or me.cleartrip)
 - 🎯 **One-Click Interface**: Simple and intuitive interface for quick access
 - 🔐 **Secure**: No data collection or tracking
 
+<<<<<<< HEAD
 ## Installation Guide
 
 ### Prerequisites
@@ -65,3 +72,10 @@ For any questions or issues, please reach out to  @aryan.bahl@flyin.com
 ---
 
 ⭐️ If you find this extension useful, please consider starring the repository!
+=======
+## Usage
+1. Click the extension icon in your Chrome toolbar
+2. Click "Go to Stats Page" button
+3. The extension will open the appropriate stats page based on your current domain
+4. Additionally, you can enter the itinerary id or trip id in the input box to open the respective stats page.
+>>>>>>> dc1a014da5f1ad98cd985229eb0a28f6aba88e12
