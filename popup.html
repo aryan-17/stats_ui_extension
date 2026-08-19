@@ -10,30 +10,30 @@
             padding: 0;
             box-sizing: border-box;
         }
-        
+
         body {
-            width: 320px;
-            height: 400px;
+            width: 340px;
+            min-height: 420px;
+            max-height: 560px;
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             background: linear-gradient(135deg, #1a1a1a 0%, #000000 100%);
             color: #fff;
-            overflow: hidden;
+            overflow-y: auto;
             margin: 0;
         }
-        
+
         .container {
             padding: 20px;
-            height: 400px;
             display: flex;
             flex-direction: column;
+            gap: 12px;
             position: relative;
         }
-        
+
         .header {
             text-align: center;
-            margin-bottom: 20px;
         }
-        
+
         .logo {
             width: 36px;
             height: 36px;
@@ -45,7 +45,7 @@
             justify-content: center;
             box-shadow: 0 4px 12px rgba(236, 102, 31, 0.25);
         }
-        
+
         .logo::before {
             content: "CT";
             font-size: 14px;
@@ -53,30 +53,46 @@
             color: white;
             letter-spacing: -0.5px;
         }
-        
+
         h1 {
             color: #EC661F;
             font-size: 18px;
             font-weight: 600;
             margin: 0;
-            text-shadow: 0 0 10px rgba(236, 102, 31, 0.3);
         }
-        
+
         .subtitle {
             color: #aaa;
             font-size: 12px;
             margin-top: 4px;
-            font-weight: 400;
         }
-        
-        .input-section {
-            margin-bottom: 18px;
+
+        .status-message {
+            padding: 10px 12px;
+            border-radius: 8px;
+            font-size: 11px;
+            line-height: 1.4;
+            border: 1px solid transparent;
         }
-        
-        .input-wrapper {
-            position: relative;
+
+        .status-info {
+            background: rgba(255, 255, 255, 0.06);
+            color: #ccc;
+            border-color: rgba(255, 255, 255, 0.08);
         }
-        
+
+        .status-success {
+            background: rgba(76, 175, 80, 0.12);
+            color: #9BE59F;
+            border-color: rgba(76, 175, 80, 0.25);
+        }
+
+        .status-error {
+            background: rgba(244, 67, 54, 0.12);
+            color: #FF9E97;
+            border-color: rgba(244, 67, 54, 0.25);
+        }
+
         .input-label {
             display: block;
             color: #EC661F;
@@ -85,135 +101,55 @@
             margin-bottom: 8px;
             text-transform: uppercase;
             letter-spacing: 0.5px;
-            text-shadow: 0 0 8px rgba(236, 102, 31, 0.4);
         }
-        
+
+        .input-row {
+            display: flex;
+            gap: 8px;
+        }
+
         input {
-            width: 100%;
+            flex: 1;
+            min-width: 0;
             padding: 12px 14px;
             border: 2px solid #333;
             border-radius: 10px;
             background: rgba(255, 255, 255, 0.05);
             font-size: 13px;
-            font-weight: 500;
             color: #fff;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
-            transition: all 0.2s ease;
-            backdrop-filter: blur(10px);
         }
-        
+
         input:focus {
             outline: none;
             border-color: #EC661F;
             background: rgba(255, 255, 255, 0.08);
-            box-shadow: 0 4px 16px rgba(236, 102, 31, 0.25), 0 0 0 3px rgba(236, 102, 31, 0.1);
-            transform: translateY(-1px);
         }
-        
+
         input::placeholder {
             color: #888;
-            font-weight: 400;
         }
-        
-        input::placeholder {
-            color: #888;
-            font-weight: 400;
-        }
-        
-        .button-group {
-            display: flex;
-            gap: 8px;
-            margin-bottom: 12px;
-        }
-        
-        .btn {
-            flex: 1;
-            padding: 11px 14px;
-            border: none;
-            border-radius: 8px;
-            font-size: 11px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            position: relative;
-            overflow: hidden;
-        }
-        
-        .btn::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
-            transition: left 0.5s;
-        }
-        
-        .btn:hover::before {
-            left: 100%;
-        }
-        
-        .btn-primary {
-            background: linear-gradient(135deg, #FF8A50 0%, #EC661F 100%);
-            color: white;
-            border: none;
-            box-shadow: 0 3px 12px rgba(236, 102, 31, 0.4), 0 0 20px rgba(236, 102, 31, 0.1);
-        }
-        
-        .btn-primary:hover {
-            background: linear-gradient(135deg, #EC661F 0%, #D4541A 100%);
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(236, 102, 31, 0.5), 0 0 30px rgba(236, 102, 31, 0.2);
-        }
-        
-        .btn-secondary {
+
+        .icon-btn {
+            width: 42px;
+            padding: 0;
+            border: 2px solid #EC661F;
+            border-radius: 10px;
             background: rgba(255, 255, 255, 0.05);
             color: #EC661F;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
-            border: 2px solid #EC661F;
-            backdrop-filter: blur(10px);
+            font-size: 14px;
+            cursor: pointer;
         }
-        
-        .btn-secondary:hover {
+
+        .icon-btn:hover {
             background: #EC661F;
-            color: white;
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(236, 102, 31, 0.4), 0 0 25px rgba(236, 102, 31, 0.2);
+            color: #fff;
         }
-        
-        .divider {
-            height: 1px;
-            background: rgba(255, 255, 255, 0.1);
-            margin: 12px 0;
-            position: relative;
-        }
-        
-        .divider::after {
-            content: 'OR';
-            position: absolute;
-            top: -8px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: rgba(0, 0, 0, 0.8);
-            color: #EC661F;
-            padding: 0 12px;
-            font-size: 10px;
-            font-weight: 600;
-            letter-spacing: 1px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 12px;
-            backdrop-filter: blur(10px);
-        }
-        
+
         .environment-badges {
             display: flex;
             gap: 4px;
-            margin-bottom: 12px;
         }
-        
+
         .badge {
             flex: 1;
             text-align: center;
@@ -223,87 +159,161 @@
             font-weight: 600;
             text-transform: uppercase;
             letter-spacing: 0.5px;
+            opacity: 0.55;
+            transition: opacity 0.2s ease, box-shadow 0.2s ease;
         }
-        
+
+        .badge.active {
+            opacity: 1;
+            box-shadow: 0 0 0 1px currentColor;
+        }
+
         .badge-prod {
             background: rgba(76, 175, 80, 0.15);
             color: #4CAF50;
             border: 1px solid rgba(76, 175, 80, 0.3);
-            backdrop-filter: blur(10px);
         }
-        
+
         .badge-qa {
             background: rgba(236, 102, 31, 0.15);
             color: #FF8A50;
             border: 1px solid rgba(236, 102, 31, 0.3);
-            backdrop-filter: blur(10px);
         }
-        
-        .floating-orbs {
+
+        .button-group {
+            display: flex;
+            gap: 8px;
+        }
+
+        .btn {
+            flex: 1;
+            padding: 11px 14px;
+            border: none;
+            border-radius: 8px;
+            font-size: 11px;
+            font-weight: 600;
+            cursor: pointer;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .btn:disabled {
+            opacity: 0.45;
+            cursor: not-allowed;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #FF8A50 0%, #EC661F 100%);
+            color: white;
+        }
+
+        .btn-primary:hover:not(:disabled) {
+            background: linear-gradient(135deg, #EC661F 0%, #D4541A 100%);
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.05);
+            color: #EC661F;
+            border: 2px solid #EC661F;
+        }
+
+        .btn-secondary:hover:not(:disabled) {
+            background: #EC661F;
+            color: white;
+        }
+
+        .divider {
+            height: 1px;
+            background: rgba(255, 255, 255, 0.1);
+            position: relative;
+            margin: 4px 0;
+        }
+
+        .divider::after {
+            content: 'OR';
             position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            pointer-events: none;
+            top: -8px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #111;
+            color: #EC661F;
+            padding: 0 10px;
+            font-size: 10px;
+            font-weight: 600;
+        }
+
+        .history-section {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .section-title {
+            font-size: 11px;
+            font-weight: 600;
+            color: #888;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .history-list {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            max-height: 120px;
+            overflow-y: auto;
+        }
+
+        .history-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 8px;
+            padding: 8px 10px;
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+        }
+
+        .history-label {
+            font-size: 11px;
+            color: #ddd;
             overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
         }
-        
-        .orb {
-            position: absolute;
-            border-radius: 50%;
-            background: rgba(236, 102, 31, 0.08);
-            animation: float 6s ease-in-out infinite;
-            box-shadow: 0 0 20px rgba(236, 102, 31, 0.1);
+
+        .history-open-btn {
+            border: 1px solid rgba(236, 102, 31, 0.5);
+            background: transparent;
+            color: #FF8A50;
+            border-radius: 6px;
+            padding: 4px 8px;
+            font-size: 10px;
+            font-weight: 600;
+            cursor: pointer;
+            flex-shrink: 0;
         }
-        
-        .orb:nth-child(1) {
-            width: 40px;
-            height: 40px;
-            top: 20%;
-            left: 10%;
-            animation-delay: -2s;
+
+        .history-open-btn:hover {
+            background: rgba(236, 102, 31, 0.15);
         }
-        
-        .orb:nth-child(2) {
-            width: 20px;
-            height: 20px;
-            top: 60%;
-            right: 15%;
-            animation-delay: -4s;
+
+        .history-empty {
+            font-size: 11px;
+            color: #777;
+            padding: 4px 0;
         }
-        
-        .orb:nth-child(3) {
-            width: 30px;
-            height: 30px;
-            bottom: 20%;
-            left: 20%;
-            animation-delay: -1s;
-        }
-        
-        @keyframes float {
-            0%, 100% { transform: translateY(0px) rotate(0deg); }
-            50% { transform: translateY(-20px) rotate(180deg); }
-        }
-        
-        @media (prefers-reduced-motion: reduce) {
-            .orb {
-                animation: none;
-            }
-            
-            .btn::before {
-                display: none;
-            }
+
+        .shortcut-hint {
+            font-size: 10px;
+            color: #666;
+            text-align: center;
         }
     </style>
 </head>
 <body>
-    <div class="floating-orbs">
-        <div class="orb"></div>
-        <div class="orb"></div>
-        <div class="orb"></div>
-    </div>
-    
     <div class="container">
         <div class="header">
             <div class="logo"></div>
@@ -311,34 +321,38 @@
             <div class="subtitle">Itinerary Analytics</div>
         </div>
 
+        <div id="statusMessage" class="status-message status-info" hidden></div>
+
         <div class="input-section">
             <label class="input-label" for="itineraryInput">Itinerary ID</label>
-            <div class="input-wrapper">
+            <div class="input-row">
                 <input type="text" id="itineraryInput" placeholder="Enter your itinerary ID">
+                <button id="copyIdButton" class="icon-btn" type="button" title="Copy itinerary ID">⧉</button>
             </div>
         </div>
 
         <div class="environment-badges">
-            <div class="badge badge-prod">Production</div>
-            <div class="badge badge-qa">QA Environment</div>
+            <div id="prodBadge" class="badge badge-prod">Production</div>
+            <div id="qaBadge" class="badge badge-qa">QA Environment</div>
         </div>
 
         <div class="button-group">
-            <button id="statsCorpButton" class="btn btn-primary">
-                Open Prod
-            </button>
-            <button id="statsSaButton" class="btn btn-primary">
-                Open QA
-            </button>
+            <button id="statsCorpButton" class="btn btn-primary" type="button">Open Prod</button>
+            <button id="statsSaButton" class="btn btn-primary" type="button">Open QA</button>
         </div>
 
         <div class="divider"></div>
 
-        <button id="statsButton" class="btn btn-secondary">
-            Stats from URL
-        </button>
+        <button id="statsButton" class="btn btn-secondary" type="button">Stats from URL</button>
+        <div class="shortcut-hint">Shortcut: Ctrl+Shift+S · Right-click page → Open Stats from URL</div>
+
+        <div class="history-section">
+            <div class="section-title">Recent</div>
+            <ul id="historyList" class="history-list"></ul>
+        </div>
     </div>
 
+    <script src="shared.js"></script>
     <script src="popup.js"></script>
 </body>
 </html>

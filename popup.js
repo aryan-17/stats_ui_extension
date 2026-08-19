@@ -1,165 +1,201 @@
 /**
- * Configuration constants for the application
+ * Popup UI for Cleartrip Stats Extension
  */
-const CONFIG = {
-    domains: {
-        cleartrip: {
-            prod: 'statsui.cleartripcorp.me',
-            qa: 'statsui.cleartrip.sa',
-            paths: {
-                air: '/#/air/'
-            }
-        },
-        flyin: {
-            prod: 'www.flyin.com',
-            qa: 'me.flyin.com',
-            endpoints: {
-                audit: '/audit'
-            }
-        }
-    }
-};
 
-const ITINERARY_ID_PATTERN = /NIX[a-f0-9]+(?:-[a-f0-9]+){4}/i;
-
-const DOMAIN_ENVIRONMENT = {
-    qa: ['me.cleartrip.ae', 'me.cleartrip.sa', 'me.flyin.com'],
-    prod: ['www.cleartrip.ae', 'www.cleartrip.sa', 'www.flyin.com']
-};
-
-/**
- * Extracts the itinerary ID from a URL by matching the NIX prefix
- * @param {string} urlString - The full URL
- * @returns {string} The extracted itinerary ID
- * @throws {Error} If the itinerary ID is not found
- */
-function extractItineraryId(urlString) {
-    const match = urlString.match(ITINERARY_ID_PATTERN);
-    if (!match) {
-        throw new Error('Itinerary ID not found in URL');
-    }
-
-    const itineraryId = match[0];
-    return itineraryId.includes('_') ? itineraryId.split('_')[0] : itineraryId;
+function showStatus(message, type = 'info') {
+    const statusEl = document.getElementById('statusMessage');
+    statusEl.textContent = message;
+    statusEl.className = `status-message status-${type}`;
+    statusEl.hidden = !message;
 }
 
-/**
- * Determines QA vs PROD from the page hostname
- * @param {string} hostname - The hostname from the URL
- * @returns {boolean} true for QA, false for PROD
- * @throws {Error} If the hostname is not a supported Cleartrip/Flyin domain
- */
-function isQaEnvironment(hostname) {
-    if (DOMAIN_ENVIRONMENT.qa.includes(hostname)) {
-        return true;
-    }
-    if (DOMAIN_ENVIRONMENT.prod.includes(hostname)) {
-        return false;
-    }
-    throw new Error(`Unsupported domain: ${hostname}`);
+function setEnvBadge(isQa) {
+    const prodBadge = document.getElementById('prodBadge');
+    const qaBadge = document.getElementById('qaBadge');
+
+    prodBadge.classList.toggle('active', isQa === false);
+    qaBadge.classList.toggle('active', isQa === true);
 }
 
-/**
- * Handles opening the stats page for a given itinerary ID
- * @param {string} itineraryId - The itinerary ID
- * @param {boolean} isQa - Whether to use QA environment
- */
-function openStatsPage(itineraryId, isQa) {
+function setUrlButtonState(canOpenFromUrl, hostname, updateStatus = true) {
+    const urlButton = document.getElementById('statsButton');
+    urlButton.disabled = !canOpenFromUrl;
+
+    if (updateStatus && !canOpenFromUrl) {
+        showStatus(`Stats from URL unavailable on ${hostname || 'this page'}. Use Open Prod/QA for manual IDs.`, 'info');
+    }
+}
+
+async function openStatsWithStatus(itineraryId, isQa, successMessage) {
     try {
-        if (!itineraryId) {
-            throw new Error('Itinerary ID is required');
-        }
-        const baseUrl = isQa ? CONFIG.domains.cleartrip.qa : CONFIG.domains.cleartrip.prod;
-        const url = `https://${baseUrl}${CONFIG.domains.cleartrip.paths.air}${itineraryId}`;
-        chrome.tabs.create({ url });
+        await StatsExtension.openStats(itineraryId, isQa);
+        showStatus(successMessage, 'success');
+        await renderHistory();
     } catch (error) {
         console.error('Error opening stats page:', error);
-        alert(`Error: ${error.message || 'Failed to open stats page'}`);
+        showStatus(error.message || 'Failed to open stats page', 'error');
     }
 }
 
-/**
- * Handles the URL-based stats page opening
- */
 async function handleUrlBasedNavigation() {
+    const urlButton = document.getElementById('statsButton');
+    urlButton.disabled = true;
+    showStatus('Opening stats from current tab...', 'info');
+
     try {
         const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
-        const url = new URL(tab.url);
-        const isQa = isQaEnvironment(url.hostname);
-
-        if (ITINERARY_ID_PATTERN.test(tab.url)) {
-            openStatsPage(extractItineraryId(tab.url), isQa);
-            return;
-        }
-
-        // Legacy Flyin: resolve itinerary ID via pid query param
-        if (url.hostname.includes('flyin.com')) {
-            const pid = url.searchParams.get('pid');
-            if (!pid) {
-                throw new Error('Itinerary ID not found in URL');
-            }
-
-            const auditDomain = isQa ? CONFIG.domains.flyin.qa : CONFIG.domains.flyin.prod;
-            const response = await fetch(`https://${auditDomain}${CONFIG.domains.flyin.endpoints.audit}?pid=${encodeURIComponent(pid)}`);
-            if (!response.ok) {
-                throw new Error('Failed to fetch audit details');
-            }
-
-            const auditData = await response.json();
-            if (!auditData?.itineraryId) {
-                throw new Error('itineraryId not found in audit response');
-            }
-
-            openStatsPage(auditData.itineraryId, isQa);
-            return;
-        }
-
-        throw new Error('Itinerary ID not found in URL');
-        
+        const { itineraryId, isQa } = await StatsExtension.resolveItineraryIdFromTab(tab);
+        await StatsExtension.openStats(itineraryId, isQa);
+        showStatus(`Opened ${isQa ? 'QA' : 'PROD'} stats for ${itineraryId}`, 'success');
+        await renderHistory();
     } catch (error) {
         console.error('Navigation error:', error);
-        alert(`Error: ${error.message || 'Failed to process the URL'}`);
+        showStatus(error.message || 'Failed to process the URL', 'error');
+    } finally {
+        await refreshTabState({ updateStatus: false });
     }
 }
 
-// Initialize the application when the DOM is fully loaded
-document.addEventListener('DOMContentLoaded', () => {
-    // Get DOM elements
-    const elements = {
-        urlButton: document.querySelector('.btn-secondary'),
-        prodButton: document.querySelector('.btn-primary:first-child'),
-        qaButton: document.querySelector('.btn-primary:last-child'),
-        itineraryInput: document.getElementById('itineraryInput')
-    };
+async function refreshTabState({ updateStatus = true } = {}) {
+    try {
+        const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
+        if (!tab?.url) {
+            setUrlButtonState(false, null, updateStatus);
+            setEnvBadge(null);
+            return;
+        }
 
-    // Validate required elements
-    const missingElements = Object.entries(elements)
-        .filter(([_, el]) => !el)
-        .map(([name]) => name);
-        
-    if (missingElements.length > 0) {
-        console.error('Missing required elements:', missingElements.join(', '));
+        const url = new URL(tab.url);
+        const detection = StatsExtension.detectFromTab(tab.url, url.hostname);
+        const itineraryInput = document.getElementById('itineraryInput');
+
+        if (detection.itineraryId && !itineraryInput.value.trim()) {
+            itineraryInput.value = detection.itineraryId;
+        }
+
+        setEnvBadge(detection.isQa);
+        setUrlButtonState(detection.canOpenFromUrl, url.hostname, updateStatus);
+
+        if (updateStatus && detection.canOpenFromUrl) {
+            showStatus(
+                `Detected ${detection.itineraryId} on ${detection.environmentLabel} (${url.hostname})`,
+                'success'
+            );
+        }
+    } catch (error) {
+        console.error('Initialization error:', error);
+        setUrlButtonState(false, null, updateStatus);
+        setEnvBadge(null);
+        if (updateStatus) {
+            showStatus('Unable to read the current tab', 'error');
+        }
+    }
+}
+
+async function initializeFromActiveTab() {
+    await refreshTabState({ updateStatus: true });
+}
+
+async function copyItineraryId() {
+    const itineraryId = document.getElementById('itineraryInput').value.trim();
+    if (!itineraryId) {
+        showStatus('Nothing to copy — enter an itinerary ID first', 'error');
         return;
     }
 
-    // Set up event listeners
+    try {
+        await navigator.clipboard.writeText(itineraryId);
+        showStatus('Itinerary ID copied', 'success');
+    } catch (error) {
+        console.error('Copy failed:', error);
+        showStatus('Failed to copy itinerary ID', 'error');
+    }
+}
+
+function truncateId(itineraryId) {
+    if (itineraryId.length <= 18) {
+        return itineraryId;
+    }
+    return `${itineraryId.slice(0, 10)}...${itineraryId.slice(-6)}`;
+}
+
+async function renderHistory() {
+    const historyList = document.getElementById('historyList');
+    const history = await StatsExtension.getHistory();
+
+    historyList.innerHTML = '';
+
+    if (history.length === 0) {
+        historyList.innerHTML = '<li class="history-empty">No recent opens yet</li>';
+        return;
+    }
+
+    history.forEach((entry) => {
+        const item = document.createElement('li');
+        item.className = 'history-item';
+
+        const label = document.createElement('span');
+        label.className = 'history-label';
+        label.textContent = `${truncateId(entry.itineraryId)} · ${entry.isQa ? 'QA' : 'PROD'}`;
+
+        const openButton = document.createElement('button');
+        openButton.type = 'button';
+        openButton.className = 'history-open-btn';
+        openButton.textContent = 'Open';
+        openButton.addEventListener('click', () => {
+            document.getElementById('itineraryInput').value = entry.itineraryId;
+            openStatsWithStatus(
+                entry.itineraryId,
+                entry.isQa,
+                `Reopened ${entry.isQa ? 'QA' : 'PROD'} stats for ${entry.itineraryId}`
+            );
+        });
+
+        item.append(label, openButton);
+        historyList.appendChild(item);
+    });
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    const elements = {
+        urlButton: document.getElementById('statsButton'),
+        prodButton: document.getElementById('statsCorpButton'),
+        qaButton: document.getElementById('statsSaButton'),
+        copyButton: document.getElementById('copyIdButton'),
+        itineraryInput: document.getElementById('itineraryInput')
+    };
+
+    const missingElements = Object.entries(elements)
+        .filter(([, el]) => !el)
+        .map(([name]) => name);
+
+    if (missingElements.length > 0) {
+        console.error('Missing required elements:', missingElements.join(', '));
+        showStatus('Popup failed to initialize', 'error');
+        return;
+    }
+
     elements.urlButton.addEventListener('click', handleUrlBasedNavigation);
-    
+    elements.copyButton.addEventListener('click', copyItineraryId);
+
     elements.prodButton.addEventListener('click', () => {
         const itineraryId = elements.itineraryInput.value.trim();
         if (!itineraryId) {
-            alert('Please enter an itinerary ID');
+            showStatus('Please enter an itinerary ID', 'error');
             return;
         }
-        openStatsPage(itineraryId, false);
+        openStatsWithStatus(itineraryId, false, `Opened PROD stats for ${itineraryId}`);
     });
 
     elements.qaButton.addEventListener('click', () => {
         const itineraryId = elements.itineraryInput.value.trim();
         if (!itineraryId) {
-            alert('Please enter an itinerary ID');
+            showStatus('Please enter an itinerary ID', 'error');
             return;
         }
-        openStatsPage(itineraryId, true);
+        openStatsWithStatus(itineraryId, true, `Opened QA stats for ${itineraryId}`);
     });
+
+    initializeFromActiveTab();
+    renderHistory();
 });

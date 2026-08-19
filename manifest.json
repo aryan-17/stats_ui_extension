@@ -1,15 +1,29 @@
 {
 	"manifest_version": 3,
 	"name": "Cleartrip Stats Extension",
-	"version": "1.0",
+	"version": "1.1",
 	"description": "Opens Cleartrip stats page based on itinerary URL",
 	"permissions": [
 		"activeTab",
+		"contextMenus",
 		"scripting",
+		"storage",
 		"tabs"
 	],
+	"background": {
+		"service_worker": "background.js"
+	},
 	"action": {
 		"default_popup": "popup.html"
+	},
+	"commands": {
+		"open-stats-from-url": {
+			"suggested_key": {
+				"default": "Ctrl+Shift+S",
+				"mac": "Command+Shift+S"
+			},
+			"description": "Open stats from current tab URL"
+		}
 	},
 	"icons": {
 		"128": "images/cleartrip.png"
